@@ -1,6 +1,8 @@
 package com.example.team6.domain;
 
 import com.example.team6.controller.request.CommentRequestDto;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -9,15 +11,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import java.time.LocalDateTime;
 
-@Builder
-@Getter
-@NoArgsConstructor
-@AllArgsConstructor
+//@Builder
+//@Getter
+//@NoArgsConstructor
+//@AllArgsConstructor
 @Entity
 public class Comment extends Timestamped {
 
@@ -35,6 +34,33 @@ public class Comment extends Timestamped {
 
   @Column(nullable = false)
   private String content;
+
+  public Comment() {
+
+  }
+
+  public Long getId() {
+    return id;
+  }
+
+  public Member getMember() {
+    return member;
+  }
+
+  public Post getPost() {
+    return post;
+  }
+
+  public String getContent() {
+    return content;
+  }
+
+  public Comment(Member member, Post post, String content) {
+    this.id = id;
+    this.member = member;
+    this.post = post;
+    this.content = content;
+  }
 
   public void update(CommentRequestDto commentRequestDto) {
     this.content = commentRequestDto.getContent();

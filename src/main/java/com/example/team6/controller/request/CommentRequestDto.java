@@ -1,13 +1,29 @@
 package com.example.team6.controller.request;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 
-@Getter
-@NoArgsConstructor
-@AllArgsConstructor
+import java.time.LocalDateTime;
+
+//@Getter
+//@NoArgsConstructor
+//@AllArgsConstructor
 public class CommentRequestDto {
   private Long postId;
   private String content;
+
+  public Long getPostId() {
+    return postId;
+  }
+
+  public String getContent() {
+    return content;
+  }
+
+  @Autowired
+  public CommentRequestDto(Long postId, String content) {
+    this.postId = postId;
+    this.content = content;
+  }
+
+
 }

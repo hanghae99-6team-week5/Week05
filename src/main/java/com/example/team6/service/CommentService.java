@@ -25,17 +25,13 @@ public class CommentService {
   private final TokenProvider tokenProvider;
   private final PostService postService;
 
+  private final Comment comment;
+
+
   @Transactional
   public ResponseDto<?> createComment(CommentRequestDto requestDto, HttpServletRequest request) {
-    if (null == request.getHeader("Refresh-Token")) {
-      return ResponseDto.fail("MEMBER_NOT_FOUND",
-          "로그인이 필요합니다.");
-    }
-
-    if (null == request.getHeader("Authorization")) {
-      return ResponseDto.fail("MEMBER_NOT_FOUND",
-          "로그인이 필요합니다.");
-    }
+    ResponseDto<Object> MEMBER_NOT_FOUND = validateUser(null == request.getHeader("Refresh-Token"), "MEMBER_NOT_FOUND", "MEMBER_NOT_FOUND", "로그인이 필요합니다.", "로그인이 필요합니다.", null == request.getHeader("Authorization"));
+    if (MEMBER_NOT_FOUND != null) return MEMBER_NOT_FOUND;
 
     Member member = validateMember(request);
     if (null == member) {
@@ -47,22 +43,28 @@ public class CommentService {
       return ResponseDto.fail("NOT_FOUND", "존재하지 않는 게시글 id 입니다.");
     }
 
-    Comment comment = Comment.builder()
-        .member(member)
-        .post(post)
-        .content(requestDto.getContent())
-        .build();
-    commentRepository.save(comment);
-    return ResponseDto.success(
-        CommentResponseDto.builder()
-            .id(comment.getId())
-            .author(comment.getMember().getNickname())
-            .content(comment.getContent())
-            .createdAt(comment.getCreatedAt())
-            .modifiedAt(comment.getModifiedAt())
-            .build()
-    );
+    Comment comment1 = new Comment(member, post, requestDto.getContent());
+
+//    Comment comment = Comment.builder()
+//        .member(member)
+//        .post(post)
+//        .content(requestDto.getContent())
+//        .build();
+    commentRepository.save(comment1);
+
+    CommentRequestDto commentRequestDto = new CommentRequestDto(comment.getId(), comment.getMember().getNickname(),comment.getContent(),comment.getCreatedAt(),comment.getModifiedAt());
+    return ResponseDto.success(commentRequestDto);
+////        CommentResponseDto.builder()
+////            .id(comment.getId())
+////            .author(comment.getMember().getNickname())
+////            .content(comment.getContent())
+////            .createdAt(comment.getCreatedAt())
+////            .modifiedAt(comment.getModifiedAt())
+////            .build()
+//    );
   }
+
+
 
   @Transactional(readOnly = true)
   public ResponseDto<?> getAllCommentsByPost(Long postId) {
@@ -74,31 +76,25 @@ public class CommentService {
     List<Comment> commentList = commentRepository.findAllByPost(post);
     List<CommentResponseDto> commentResponseDtoList = new ArrayList<>();
 
+    CommentRequestDto commentRequestDto = new CommentRequestDto(comment.getId(), comment.getMember().getNickname(),comment.getContent(),comment.getCreatedAt(),comment.getModifiedAt());
     for (Comment comment : commentList) {
       commentResponseDtoList.add(
-          CommentResponseDto.builder()
-              .id(comment.getId())
-              .author(comment.getMember().getNickname())
-              .content(comment.getContent())
-              .createdAt(comment.getCreatedAt())
-              .modifiedAt(comment.getModifiedAt())
-              .build()
-      );
+//          CommentResponseDto.builder()
+//              .id(comment.getId())
+//              .author(comment.getMember().getNickname())
+//              .content(comment.getContent())
+//              .createdAt(comment.getCreatedAt())
+//              .modifiedAt(comment.getModifiedAt())
+//              .build()
+//      );
     }
     return ResponseDto.success(commentResponseDtoList);
   }
 
   @Transactional
   public ResponseDto<?> updateComment(Long id, CommentRequestDto requestDto, HttpServletRequest request) {
-    if (null == request.getHeader("Refresh-Token")) {
-      return ResponseDto.fail("MEMBER_NOT_FOUND",
-          "로그인이 필요합니다.");
-    }
-
-    if (null == request.getHeader("Authorization")) {
-      return ResponseDto.fail("MEMBER_NOT_FOUND",
-          "로그인이 필요합니다.");
-    }
+    ResponseDto<Object> MEMBER_NOT_FOUND = validateUser(null == request.getHeader("Refresh-Token"), "MEMBER_NOT_FOUND", "MEMBER_NOT_FOUND", "로그인이 필요합니다.", "로그인이 필요합니다.", null == request.getHeader("Authorization"));
+    if (MEMBER_NOT_FOUND != null) return MEMBER_NOT_FOUND;
 
     Member member = validateMember(request);
     if (null == member) {
@@ -111,13 +107,8 @@ public class CommentService {
     }
 
     Comment comment = isPresentComment(id);
-    if (null == comment) {
-      return ResponseDto.fail("NOT_FOUND", "존재하지 않는 댓글 id 입니다.");
-    }
-
-    if (comment.validateMember(member)) {
-      return ResponseDto.fail("BAD_REQUEST", "작성자만 수정할 수 있습니다.");
-    }
+    ResponseDto<Object> NOT_FOUND = validateUser(null == comment, "NOT_FOUND", "BAD_REQUEST", "존재하지 않는 댓글 id 입니다.", "작성자만 수정할 수 있습니다.", comment.validateMember(member));
+    if (NOT_FOUND != null) return NOT_FOUND;
 
     comment.update(requestDto);
     return ResponseDto.success(
@@ -133,15 +124,8 @@ public class CommentService {
 
   @Transactional
   public ResponseDto<?> deleteComment(Long id, HttpServletRequest request) {
-    if (null == request.getHeader("Refresh-Token")) {
-      return ResponseDto.fail("MEMBER_NOT_FOUND",
-          "로그인이 필요합니다.");
-    }
-
-    if (null == request.getHeader("Authorization")) {
-      return ResponseDto.fail("MEMBER_NOT_FOUND",
-          "로그인이 필요합니다.");
-    }
+    ResponseDto<Object> MEMBER_NOT_FOUND = validateUser(null == request.getHeader("Refresh-Token"), "MEMBER_NOT_FOUND", "MEMBER_NOT_FOUND", "로그인이 필요합니다.", "로그인이 필요합니다.", null == request.getHeader("Authorization"));
+    if (MEMBER_NOT_FOUND != null) return MEMBER_NOT_FOUND;
 
     Member member = validateMember(request);
     if (null == member) {
@@ -149,13 +133,8 @@ public class CommentService {
     }
 
     Comment comment = isPresentComment(id);
-    if (null == comment) {
-      return ResponseDto.fail("NOT_FOUND", "존재하지 않는 댓글 id 입니다.");
-    }
-
-    if (comment.validateMember(member)) {
-      return ResponseDto.fail("BAD_REQUEST", "작성자만 수정할 수 있습니다.");
-    }
+    ResponseDto<Object> NOT_FOUND = validateUser(null == comment, "NOT_FOUND", "BAD_REQUEST", "존재하지 않는 댓글 id 입니다.", "작성자만 수정할 수 있습니다.", comment.validateMember(member));
+    if (NOT_FOUND != null) return NOT_FOUND;
 
     commentRepository.delete(comment);
     return ResponseDto.success("success");
@@ -167,11 +146,25 @@ public class CommentService {
     return optionalComment.orElse(null);
   }
 
+
   @Transactional
   public Member validateMember(HttpServletRequest request) {
     if (!tokenProvider.validateToken(request.getHeader("Refresh-Token"))) {
       return null;
     }
     return tokenProvider.getMemberFromAuthentication();
+  }
+  //로그인 유효성 검사
+  private static ResponseDto<Object> validateUser(boolean request, String MEMBER_NOT_FOUND, String MEMBER_NOT_FOUND1, String message, String message1, boolean request1) {
+    if (request) {
+      return ResponseDto.fail(MEMBER_NOT_FOUND,
+              message);
+    }
+
+    if (request1) {
+      return ResponseDto.fail(MEMBER_NOT_FOUND1,
+              message1);
+    }
+    return null;
   }
 }
