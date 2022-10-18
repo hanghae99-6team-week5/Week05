@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
+//@AllArgsConstructor
 public class PostResponseDto {
   private Long id;
   private String title;
@@ -19,4 +19,16 @@ public class PostResponseDto {
   private List<CommentResponseDto> commentResponseDtoList;
   private LocalDateTime createdAt;
   private LocalDateTime modifiedAt;
+
+  public PostResponseDto(Long id, String title, String content, String author,
+         List<CommentResponseDto> commentResponseDtoList, LocalDateTime createdAt, LocalDateTime modifiedAt) {
+    this.id = id;
+    this.title = title;
+    this.content = content;
+    this.author = author;
+    this. commentResponseDtoList = commentResponseDtoList;
+    this. createdAt = createdAt;
+    this. modifiedAt = modifiedAt;
+  }
 }
+

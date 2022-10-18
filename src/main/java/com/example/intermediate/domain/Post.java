@@ -1,6 +1,6 @@
-package com.example.team6.domain;
+package com.example.intermediate.domain;
 
-import com.example.team6.controller.request.PostRequestDto;
+import com.example.intermediate.controller.request.PostRequestDto;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -17,17 +17,29 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+//@Builder
 @Getter
-@Builder
-@NoArgsConstructor //파라미터가 없는 생성자를 생성
-@AllArgsConstructor // 클래스에 존재하는 모든 필드에 대한 생성자를 자동으로 생성
+//@NoArgsConstructor
+//@AllArgsConstructor
 @Entity
 public class Post extends Timestamped {
 
-  //////////////////////////추가 부분(생성자 생성)
-//  public Post() {
-//  }
-  //////////////////////////
+  public Post() {
+  }
+
+  public Post(String title, String content, Member member) {
+    this.title = title;
+    this.content = content;
+    this.member = member;
+  }
+
+  public Post(Long id, String title, String content, List<Comment> comments, Member member) {
+    this.id = id;
+    this.title = title;
+    this.content = content;
+    this.comments = comments;
+    this.member = member;
+  }
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,16 +51,18 @@ public class Post extends Timestamped {
   @Column(nullable = false)
   private String content;
 
+  @Column
+  private Long heartNum;
+
   @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Comment> comments;
+
 
   @JoinColumn(name = "member_id", nullable = false)
   @ManyToOne(fetch = FetchType.LAZY)
   private Member member;
 
-
-
-  public void update(PostRequestDto postRequestDto) {
+    public void update(PostRequestDto postRequestDto) {
     this.title = postRequestDto.getTitle();
     this.content = postRequestDto.getContent();
   }
