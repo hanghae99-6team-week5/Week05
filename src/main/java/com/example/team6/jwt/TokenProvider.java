@@ -18,8 +18,6 @@ import io.jsonwebtoken.security.SecurityException;
 import java.security.Key;
 import java.util.Date;
 import java.util.Optional;
-
-import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -29,7 +27,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
-@Component //
+@Component
 public class TokenProvider {
 
   private static final String AUTHORITIES_KEY = "auth";
@@ -75,7 +73,6 @@ public class TokenProvider {
         .build();
 
     refreshTokenRepository.save(refreshTokenObject);
-
 
     return TokenDto.builder()
         .grantType(BEARER_PREFIX)
