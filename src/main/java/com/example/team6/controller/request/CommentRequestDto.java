@@ -19,7 +19,7 @@ public class CommentRequestDto {
     return content;
   }
 
-  @Autowired
+
   public CommentRequestDto(Long postId, String content) {
     this.postId = postId;
     this.content = content;
