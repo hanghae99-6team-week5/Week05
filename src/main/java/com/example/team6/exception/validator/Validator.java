@@ -1,4 +1,4 @@
-package com.example.team6.jwt.validator;
+package com.example.team6.exception.validator;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;

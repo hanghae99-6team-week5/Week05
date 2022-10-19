@@ -10,11 +10,4 @@ import lombok.NoArgsConstructor;
 public class PostRequestDto {
   private String title;
   private String content;
-
-  /////////////추가부분(파라미터 없는 생성자 생성)
-//  public PostRequestDto(String title, String content){
-//    this.title = title;
-//    this.content = content;
-//  }
-/////////////////////////////////////////////
 }

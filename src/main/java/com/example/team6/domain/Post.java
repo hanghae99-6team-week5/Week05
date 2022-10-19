@@ -17,17 +17,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Getter
 @Builder
-@NoArgsConstructor //파라미터가 없는 생성자를 생성
-@AllArgsConstructor // 클래스에 존재하는 모든 필드에 대한 생성자를 자동으로 생성
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class Post extends Timestamped {
-
-  //////////////////////////추가 부분(생성자 생성)
-//  public Post() {
-//  }
-  //////////////////////////
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,8 +40,6 @@ public class Post extends Timestamped {
   @JoinColumn(name = "member_id", nullable = false)
   @ManyToOne(fetch = FetchType.LAZY)
   private Member member;
-
-
 
   public void update(PostRequestDto postRequestDto) {
     this.title = postRequestDto.getTitle();
