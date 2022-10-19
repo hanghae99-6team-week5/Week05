@@ -14,4 +14,13 @@ public class TokenDto {
   private String accessToken;
   private String refreshToken;
   private Long accessTokenExpiresIn;
+
+  //////////////////추가
+//  public TokenDto(String grantType, String accessToken, String refreshToken, Long accessTokenExpiresIn) {
+//    this.grantType = grantType;
+//    this.accessToken = accessToken;
+//    this.refreshToken = refreshToken;
+//    this.accessTokenExpiresIn = accessTokenExpiresIn;
+//  }
+  //////////////////
 }

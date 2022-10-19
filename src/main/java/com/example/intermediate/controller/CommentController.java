@@ -1,26 +1,26 @@
-package com.example.team6.controller;
+package com.example.intermediate.controller;
 
-import com.example.team6.controller.response.ResponseDto;
-import com.example.team6.controller.request.CommentRequestDto;
-import com.example.team6.service.CommentService;
+import com.example.intermediate.controller.response.ResponseDto;
+import com.example.intermediate.controller.request.CommentRequestDto;
+import com.example.intermediate.service.CommentService;
 import javax.servlet.http.HttpServletRequest;
 
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @Validated
-//@RequiredArgsConstructor
-
+@RequiredArgsConstructor  // 왜써야하는지? 어떻게 바꿔야되는지?
 @RestController
 public class CommentController {
+
   private final CommentService commentService;
 
-  public CommentController(CommentService commentService) {
-    this.commentService = commentService;
-  }
+  //public.CommentController(CommentService cocoService) {
+//  this.commentService =commentService;
+//}
 
   @ApiImplicitParams({
           @ApiImplicitParam(
