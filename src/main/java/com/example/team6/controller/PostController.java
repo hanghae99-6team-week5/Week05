@@ -10,11 +10,20 @@ import io.swagger.annotations.ApiImplicitParams;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-@RequiredArgsConstructor
+//@RequiredArgsConstructor // 추가 작업을 필요로 하는 필드에 대한 생성자를 생성
+
+//@Controller에 @ResponseBody가 추가된 것 // 주용도는 Json 형태로 객체 데이터를 반환
+//REST API를 개발할 때 주로 사용하며 객체를 ResponseEntity로 감싸서 반환
 @RestController
 public class PostController {
 
   private final PostService postService;
+
+  /////@RequiredArgsConstructor 추가 부분
+  public PostController(PostService postService) {
+    this.postService = postService;
+  }
+  ///////////
 
   @ApiImplicitParams({
           @ApiImplicitParam(
@@ -24,9 +33,10 @@ public class PostController {
                   paramType = "header"
           )
   })
+
   @PostMapping(value = "/api/auth/post")
   public ResponseDto<?> createPost(@RequestBody PostRequestDto requestDto,
-      HttpServletRequest request) {
+                                   HttpServletRequest request) {
     return postService.createPost(requestDto, request);
   }
 
@@ -42,13 +52,13 @@ public class PostController {
 
   @PutMapping(value = "/api/auth/post/{id}")
   public ResponseDto<?> updatePost(@PathVariable Long id, @RequestBody PostRequestDto postRequestDto,
-      HttpServletRequest request) {
-    return postService.updatePost(id, postRequestDto, request);
+                                   HttpServletRequest request) {
+    return postService.updatePosts(id, postRequestDto, request);
   }
 
   @DeleteMapping(value = "/api/auth/post/{id}")
   public ResponseDto<?> deletePost(@PathVariable Long id,
-      HttpServletRequest request) {
+                                   HttpServletRequest request) {
     return postService.deletePost(id, request);
   }
 
