@@ -51,10 +51,14 @@ public class TokenProvider {
   public TokenDto generateTokenDto(Member member) {
     long now = (new Date().getTime());
 
+    //access토큰 유효시간
     Date accessTokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
     String accessToken = Jwts.builder()
+            //로그인한 유저
         .setSubject(member.getNickname())
+            //
         .claim(AUTHORITIES_KEY, Authority.ROLE_MEMBER.toString())
+            //access토큰 유효시간
         .setExpiration(accessTokenExpiresIn)
         .signWith(key, SignatureAlgorithm.HS256)
         .compact();
