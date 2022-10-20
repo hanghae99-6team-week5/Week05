@@ -11,7 +11,6 @@ import com.example.team6.jwt.TokenProvider;
 import com.example.team6.repository.CommentRepository;
 import com.example.team6.repository.PostRepository;
 
-import java.lang.reflect.Member;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -90,10 +89,11 @@ public class PostService {
     for (Comment comment : commentList) {
       //builder() 미사용시 생성자 추가 후 commentResponseDto 값 넣어주기
       CommentResponseDto commentResponseDto = new
-              CommentResponseDto(comment.getId(),
+              CommentResponseDto(
               comment.getMember().getNickname(),
               comment.getContent(),
-              comment.getCreatedAt(), comment.getModifiedAt());
+              comment.getCreatedAt(),
+              comment.getModifiedAt());
 
       commentResponseDtoList.add(commentResponseDto);
     }

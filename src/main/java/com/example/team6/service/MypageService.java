@@ -7,8 +7,10 @@ import com.example.team6.controller.response.ResponseDto;
 import com.example.team6.domain.Comment;
 import com.example.team6.domain.Member;
 import com.example.team6.domain.Post;
+import com.example.team6.domain.PostHeart;
 import com.example.team6.jwt.TokenProvider;
 import com.example.team6.repository.CommentRepository;
+import com.example.team6.repository.PostHeartRepository;
 import com.example.team6.repository.PostRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,12 +26,14 @@ public class MypageService {
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
 
+    private final PostHeartRepository postHeartRepository;
     private final TokenProvider tokenProvider;
 
     //@AllArgsConstructor
-    public MypageService(CommentRepository commentRepository, PostRepository postRepository, TokenProvider tokenProvider) {
+    public MypageService(CommentRepository commentRepository, PostRepository postRepository, PostHeartRepository postHeartRepository, TokenProvider tokenProvider) {
         this.commentRepository = commentRepository;
         this.postRepository = postRepository;
+        this.postHeartRepository = postHeartRepository;
         this.tokenProvider = tokenProvider;
     }
 
@@ -66,6 +70,7 @@ public class MypageService {
                     post.getId(),
                     post.getTitle(),
                     post.getMember().getNickname(),
+                    post.getContent(),
                     postHeartRepository.countAllByPostId(post.getId()),
                     post.getCreatedAt(),
                     post.getModifiedAt());
@@ -109,7 +114,6 @@ public class MypageService {
             List<CommentResponseDto> myCommentResponseDtoList = new ArrayList<>();
             for (Comment comment : myCommentList) {
                 CommentResponseDto commentResponseDto = new CommentResponseDto(
-                        comment.getId(),
                         comment.getMember().getNickname(),
                         comment.getContent(),
                         comment.getCreatedAt(),
