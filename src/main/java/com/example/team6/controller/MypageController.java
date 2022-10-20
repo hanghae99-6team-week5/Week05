@@ -4,6 +4,8 @@ package com.example.team6.controller;
 import com.example.team6.controller.response.ResponseDto;
 import com.example.team6.repository.CommentRepository;
 import com.example.team6.service.MypageService;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -24,7 +26,15 @@ public class MypageController {
         this.mypageService = mypageService;
         this.commentRepository = commentRepository;
     }
-
+    @ApiImplicitParams({
+            // 스웨거에서 할당해야하는 값들을 알려주는 Description
+            @ApiImplicitParam(
+                    name = "Refresh-Token",
+                    required = true,
+                    dataType = "string",
+                    paramType = "header"
+            )
+    })
 //    @ResponseStatus(value = HttpStatus.OK)
 //    @GetMapping({"/api/mypage/comment"})
 //    private List<Comment> getMyComment(@AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -56,6 +66,15 @@ public class MypageController {
         return mypageService.getMyPagePost(request);
     }
 
+    @ApiImplicitParams({
+            // 스웨거에서 할당해야하는 값들을 알려주는 Description
+            @ApiImplicitParam(
+                    name = "Refresh-Token",
+                    required = true,
+                    dataType = "string",
+                    paramType = "header"
+            )
+    })
     @RequestMapping(value = "/api/auth/mypage/comment", method = RequestMethod.GET)
     public ResponseDto<?> getMyPageComment(HttpServletRequest request) {
         return mypageService.getMyPageComment(request);

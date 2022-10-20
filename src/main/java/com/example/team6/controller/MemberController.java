@@ -10,11 +10,16 @@ import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 @RestController
 public class MemberController {
 
   private final MemberService memberService;
+
+  //@RequiredArgsConstructor
+  public MemberController(MemberService memberService) {
+    this.memberService = memberService;
+  }
 
   @PostMapping(value = "/api/member/signup")
   public ResponseDto<?> signup(@RequestBody @Valid MemberRequestDto requestDto) {

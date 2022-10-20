@@ -74,6 +74,7 @@ public class MypageService {
                     postHeartRepository.countAllByPostId(post.getId()),
                     post.getCreatedAt(),
                     post.getModifiedAt());
+            myPostResponseDtoList.add(postResponseDto);
         }
         return ResponseDto.success(myPostResponseDtoList);
     }
@@ -109,7 +110,7 @@ public class MypageService {
                 return ResponseDto.fail("INVALID_TOKEN", "Token이 유효하지 않습니다.");
             }
 
-            // 사용자가 작성한 댓글, 대댓글
+            // 사용자가 작성한 댓글
             List<Comment> myCommentList = commentRepository.findAllByMember(member);
             List<CommentResponseDto> myCommentResponseDtoList = new ArrayList<>();
             for (Comment comment : myCommentList) {
