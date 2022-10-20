@@ -40,6 +40,7 @@ public class PostController {
     return postService.createPost(requestDto, request);
   }
 
+
   @GetMapping(value = "/api/post/{id}")
   public ResponseDto<?> getPost(@PathVariable Long id) {
     return postService.getPost(id);
@@ -50,12 +51,28 @@ public class PostController {
     return postService.getAllPost();
   }
 
+  @ApiImplicitParams({
+          @ApiImplicitParam(
+                  name = "Refresh-Token",
+                  required = true,
+                  dataType = "string",
+                  paramType = "header"
+          )
+  })
   @PutMapping(value = "/api/auth/post/{id}")
   public ResponseDto<?> updatePost(@PathVariable Long id, @RequestBody PostRequestDto postRequestDto,
                                    HttpServletRequest request) {
     return postService.updatePosts(id, postRequestDto, request);
   }
 
+  @ApiImplicitParams({
+          @ApiImplicitParam(
+                  name = "Refresh-Token",
+                  required = true,
+                  dataType = "string",
+                  paramType = "header"
+          )
+  })
   @DeleteMapping(value = "/api/auth/post/{id}")
   public ResponseDto<?> deletePost(@PathVariable Long id,
                                    HttpServletRequest request) {
