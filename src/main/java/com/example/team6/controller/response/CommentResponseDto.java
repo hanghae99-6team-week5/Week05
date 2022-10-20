@@ -2,25 +2,23 @@ package com.example.team6.controller.response;
 
 import java.time.LocalDateTime;
 
+import lombok.Builder;
 import org.springframework.beans.factory.annotation.Autowired;
 
-//@Builder
+@Builder
 //@Getter
 //@NoArgsConstructor
 //@AllArgsConstructor
 public class CommentResponseDto {
-  private Long id;
-  private String author;
+
+  private String nickname;
   private String content;
   private LocalDateTime createdAt;
   private LocalDateTime modifiedAt;
 
-  public Long getId() {
-    return id;
-  }
 
-  public String getAuthor() {
-    return author;
+  public String getNickname() {
+    return nickname;
   }
 
   public String getContent() {
@@ -36,18 +34,17 @@ public class CommentResponseDto {
   }
 
   //@AllArgsConsturctor
-  public CommentResponseDto( String author, String content, LocalDateTime createdAt, LocalDateTime modifiedAt) {
-    this.author = author;
+  public CommentResponseDto( String nickname, String content, LocalDateTime createdAt, LocalDateTime modifiedAt) {
+    this.nickname = nickname;
     this.content = content;
     this.createdAt = createdAt;
     this.modifiedAt = modifiedAt;
   }
 
-  public void setCommentResponseDto(Long id, String memberNickname, String content, LocalDateTime createdAt, LocalDateTime modifiedAt) {
-    // 댓글 id 할당
-    this.id = id;
+  public void setCommentResponseDto(String memberNickname, String content, LocalDateTime createdAt, LocalDateTime modifiedAt) {
+
     // 댓글 작성자 할당(member.getNickname)
-    this.author = memberNickname;
+    this.nickname = memberNickname;
     // 댓글 내용할당
     this.content = content;
     // 댓글 생성시간
@@ -56,11 +53,4 @@ public class CommentResponseDto {
     this.modifiedAt = modifiedAt;
   }
 
-  public CommentResponseDto(Long id, String author, String content, LocalDateTime createdAt, LocalDateTime modifiedAt) {
-    this.id = id;
-    this.author = author;
-    this.content = content;
-    this.createdAt = createdAt;
-    this.modifiedAt = modifiedAt;
-  }
 }
