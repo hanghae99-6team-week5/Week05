@@ -21,22 +21,22 @@ import org.springframework.transaction.annotation.Transactional;
 //@RequiredArgsConstructor
 public class CommentService {
   private final CommentRepository commentRepository;
-  private final CommentResponseDto commentResponseDto;
   private final TokenProvider tokenProvider;
   private final PostService postService;
 
+  //생성자를 통해서 의존성 주입
   // TODO : 왜 이렇게 해줘야하는지 작성 용문님 숙제 ( 의존성 주입의 3가지 방법 )
-  public CommentService(CommentRepository commentRepository, CommentResponseDto commentResponseDto, TokenProvider tokenProvider, PostService postService) {
+  public CommentService(CommentRepository commentRepository, TokenProvider tokenProvider, PostService postService) {
     this.commentRepository = commentRepository;
-    this.commentResponseDto = commentResponseDto;
     this.tokenProvider = tokenProvider;
     this.postService = postService;
   }
 
-  //게시글 생성
+  //comment 생성
   @Transactional
   public ResponseDto<?> createComment(CommentRequestDto requestDto, HttpServletRequest request) {
 
+    //로그인 유효성 검사
     ResponseDto<Object> MEMBER_NOT_FOUND =
             validateUser(
                     null == request.getHeader("Refresh-Token"),
@@ -58,22 +58,24 @@ public class CommentService {
       return ResponseDto.fail("NOT_FOUND", "존재하지 않는 게시글 id 입니다.");
     }
 
-    Comment comment = new Comment(member, post, requestDto.getContent());
+    // 내용을 담아줄 savecomment 생성
+    Comment savecomment = new Comment(member, post, requestDto.getContent());
 //    Comment comment = Comment.builder()
 //            .member(member)
 //            .post(post)
 //            .content(requestDto.getContent())
 //            .build();
-    Comment savedcomment = commentRepository.save(comment);
+    Comment savedcomment = commentRepository.save(savecomment); //DB에 저장
 
-    CommentResponseDto setCommet = new CommentResponseDto(
-            commentResponseDto.getAuthor(),
-            commentResponseDto.getContent(),
-            commentResponseDto.getCreatedAt(),
-            commentResponseDto.getModifiedAt());
+    //고객에게 보여야하는 정보를 new연산자를 통해서 생성
+    CommentResponseDto setcomment = new CommentResponseDto(
+            savedcomment.getMember().getNickname(),
+            savedcomment.getContent(),
+            savedcomment.getCreatedAt(),
+            savedcomment.getModifiedAt());
 
-
-    return ResponseDto.success(setCommet);
+    //client에게 setcomment 값을 return
+    return ResponseDto.success(setcomment);
 //            CommentResponseDto.builder()
 //                    .id(comment.getId())
 //                    .author(comment.getMember().getNickname())
@@ -85,7 +87,7 @@ public class CommentService {
   }
 
 
-  // 댓글 조회
+  // comment 조회
   @Transactional(readOnly = true)
   public ResponseDto<?> getAllCommentsByPost(Long postId) {
     Post post = postService.isPresentPost(postId);
@@ -93,12 +95,15 @@ public class CommentService {
       return ResponseDto.fail("NOT_FOUND", "존재하지 않는 게시글 id 입니다.");
     }
 
+    //모든 comment를 commentlist에 담기
     List<Comment> commentList = commentRepository.findAllByPost(post);
+
+    //고객에게 보여질 내용을 담을 list 생성
     List<CommentResponseDto> commentResponseDtoList = new ArrayList<>();
 
+    //for문을 통해서 필요한 내용만 가져옴 가져온 내용을 list에 담아내기
     for (Comment comment : commentList) {
       CommentResponseDto commentResponseDto1 = new CommentResponseDto(
-              comment.getId(),
               comment.getMember().getNickname(),
               comment.getContent(),
               comment.getCreatedAt(),
@@ -113,10 +118,11 @@ public class CommentService {
 //              .build()
 //      );
     };
+    //list에 담은 내용을 client에게 return
     return ResponseDto.success(commentResponseDtoList);
   }
 
-  //댓글 업데이트
+  //comment 업데이트
   @Transactional
   public ResponseDto<?> updateComment(Long id, CommentRequestDto requestDto, HttpServletRequest request) {
     ResponseDto<Object> MEMBER_NOT_FOUND = validateUser(null == request.getHeader("Refresh-Token"), "MEMBER_NOT_FOUND", "MEMBER_NOT_FOUND", "로그인이 필요합니다.", "로그인이 필요합니다.", null == request.getHeader("Authorization"));
@@ -140,7 +146,7 @@ public class CommentService {
     return ResponseDto.success(null);
   }
 
-  //댓글 삭제
+  //comment 삭제
   @Transactional
   public ResponseDto<?> deleteComment(Long id, HttpServletRequest request) {
     ResponseDto<Object> MEMBER_NOT_FOUND = validateUser(null == request.getHeader(
@@ -180,6 +186,7 @@ public class CommentService {
   }
 
 
+  //refresh token 확인
   @Transactional
   public Member validateMember(HttpServletRequest request) {
     if (!tokenProvider.validateToken(request.getHeader("Refresh-Token"))) {
