@@ -17,26 +17,70 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Builder
-@Getter
-@NoArgsConstructor
-@AllArgsConstructor
+//@Builder
+//@Getter
+//@NoArgsConstructor
+//@AllArgsConstructor
 @Entity
 public class Post extends Timestamped {
+
+  public Post() {
+  }
+
+  public Post(String title, String content, Member member) {
+    this.title = title;
+    this.content = content;
+    this.member = member;
+  }
+
+  public Post(Long id, String title, String content, List<Comment> comments, Member member) {
+    this.id = id;
+    this.title = title;
+    this.content = content;
+    this.comments = comments;
+    this.member = member;
+  }
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
-
   @Column(nullable = false)
   private String title;
 
   @Column(nullable = false)
   private String content;
 
+  @Column
+  private Long heartNum;
+
   @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Comment> comments;
 
+  //////@Getter 대신 추가 부분
+  public Long getId() {
+    return id;
+  }
+
+  public String getTitle() {
+    return title;
+  }
+
+  public String getContent() {
+    return content;
+  }
+
+//  public Long getHeartNum() {
+//    return heartNum;
+//  }
+
+  public List<Comment> getComments() {
+    return comments;
+  }
+
+  public Member getMember() {
+    return member;
+  }
+  ////////////////////
   @JoinColumn(name = "member_id", nullable = false)
   @ManyToOne(fetch = FetchType.LAZY)
   private Member member;
