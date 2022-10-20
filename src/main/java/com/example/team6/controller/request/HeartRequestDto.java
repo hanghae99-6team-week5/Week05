@@ -6,13 +6,16 @@ package com.example.team6.controller.request;
 public class HeartRequestDto {
     private Long id;
 
-    //생성자추가
+    //@AllArgsConstructor
     public HeartRequestDto(Long id) {
         this.id = id;
     }
     //@Getter 대체 부분 추가
     public Long getId() {
         return id;
+    }
+    //@NoArgsConstructor
+    public HeartRequestDto() {
     }
 }
 
