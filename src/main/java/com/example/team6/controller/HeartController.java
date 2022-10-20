@@ -15,11 +15,17 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 
 @Validated
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 @RestController
 public class HeartController {
 
     private final PostHeartService postHeartService;
+
+    //////@RequiredArgsConstructor 부분 추가
+    public HeartController(PostHeartService postHeartService) {
+        this.postHeartService = postHeartService;
+    }
+    //////////////////////////////
     //private final PostCommentHeartService postCommentHeartService;
 
 
@@ -32,16 +38,9 @@ public class HeartController {
                     paramType = "header"
             )
     })
-
-    @RequestMapping(value = "/api/auth/post/heart/{id}", method = RequestMethod.POST)
+    @RequestMapping(value = "/api/auth/post/heart", method = RequestMethod.POST)
     public ResponseDto<?> createPostHeart(@RequestBody HeartRequestDto requestDto,
                                           HttpServletRequest request) {
         return postHeartService.createPostHeart(requestDto, request);
     }
-//    @RequestMapping(value = "/api/auth/postComment/heart", method = RequestMethod.POST)
-//    public ResponseDto<?> createPostCommentHeart(@RequestBody HeartRequestDto requestDto,
-//                                                 HttpServletRequest request) {
-//        return postCommentHeartService.createPostCommentHeart(requestDto, request);
-//    }
-
 }

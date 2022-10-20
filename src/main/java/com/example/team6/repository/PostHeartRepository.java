@@ -4,6 +4,7 @@ import com.example.team6.domain.Member;
 import com.example.team6.domain.PostHeart;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.lang.reflect.Member;
 import java.util.List;
 
 public interface PostHeartRepository extends JpaRepository<PostHeart, Long> {

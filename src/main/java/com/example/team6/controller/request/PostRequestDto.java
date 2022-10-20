@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 //@NoArgsConstructor
 //@AllArgsConstructor
 public class PostRequestDto {
-  private String title; //final을 왜 붙여줘야하지?
+  private String title;
   private String content;
 
   /////////////추가부분(생성자 생성)

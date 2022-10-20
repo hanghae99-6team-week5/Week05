@@ -10,6 +10,8 @@ import com.example.team6.controller.response.ResponseDto;
 import com.example.team6.jwt.TokenProvider;
 import com.example.team6.repository.CommentRepository;
 import com.example.team6.repository.PostRepository;
+
+import java.lang.reflect.Member;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -21,7 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 //@RequiredArgsConstructor
 public class PostService {
-
+  // 의존성 주입을 해서 사용하는 경우, 최초 선언 후 선언된 객체의 기능(메서드)만을 사용하고 새롭게 객체를 생성하거나 값을 할당해줄 필요가 없는 경우
+  //이 부분은 계속 다른 메서드에 쓰이는 용도로 사용되기에 의존성 주입이 필요하다
   private final PostRepository postRepository;
   private final CommentRepository commentRepository;
   private final TokenProvider tokenProvider;
@@ -86,34 +89,27 @@ public class PostService {
 
     for (Comment comment : commentList) {
       //builder() 미사용시 생성자 추가 후 commentResponseDto 값 넣어주기
-      CommentResponseDto commentResponseDto = new CommentResponseDto(comment.getId(), comment.getMember().getNickname(), comment.getContent(),
+      CommentResponseDto commentResponseDto = new
+              CommentResponseDto(comment.getId(),
+              comment.getMember().getNickname(),
+              comment.getContent(),
               comment.getCreatedAt(), comment.getModifiedAt());
-      commentResponseDtoList.add(commentResponseDto);
-      //builder 수정
-//          CommentResponseDto.builder()
-//              .id(comment.getId())
-//              .author(comment.getMember().getNickname())
-//              .content(comment.getContent())
-//              .createdAt(comment.getCreatedAt())
-//              .modifiedAt(comment.getModifiedAt())
-//              .build()
 
+      commentResponseDtoList.add(commentResponseDto);
     }
+
     //생서자를 return 위에 추가 //success( 여기에 값 넣어주기 )
-    PostResponseDto postResponseDto = new PostResponseDto(post.getId(), post.getTitle(), post.getContent(),commentResponseDtoList,
-            post.getMember().getNickname(), post.getCreatedAt(), post.getModifiedAt());
+    PostResponseDto postResponseDto = new PostResponseDto(
+            post.getId(),
+            post.getTitle(),
+            post.getContent(),
+            commentResponseDtoList,
+            post.getMember().getNickname(),
+            post.getCreatedAt(),
+            post.getModifiedAt());
+
+
     return ResponseDto.success(postResponseDto);
-    //builder 수정
-//        PostResponseDto.builder()
-//            .id(post.getId())
-//            .title(post.getTitle())
-//            .content(post.getContent())
-//            .commentResponseDtoList(commentResponseDtoList)
-//            .author(post.getMember().getNickname())
-//            .createdAt(post.getCreatedAt())
-//            .modifiedAt(post.getModifiedAt())
-//            .build()
-//    );
   }
 
   @Transactional(readOnly = true)
@@ -162,7 +158,7 @@ public class PostService {
       return ResponseDto.fail("MEMBER_NOT_FOUND",
               "로그인이 필요합니다.");
     }
-
+//사용할 때마다 새로운 이름으로 사용하기 때문에 의존성 주입을 해주는게 아니다
     Member member = validateMember(request);
     if (null == member) {
       return ResponseDto.fail("INVALID_TOKEN", "Token이 유효하지 않습니다.");
@@ -194,5 +190,4 @@ public class PostService {
     }
     return tokenProvider.getMemberFromAuthentication();
   }
-
 }
